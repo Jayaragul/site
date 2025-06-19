@@ -1,3 +1,185 @@
+body {
+    font-family: Arial, sans-serif; /* Using a common sans-serif font */
+    background-color: #F8F6F4; /* Light off-white background */
+    color: #333333; /* Dark grey/brown text */
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.stats-dashboard {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #F8F6F4; /* Ensure background is consistent */
+}
+
+.header-line {
+    width: 100%;
+    height: 1px;
+    background-color: #CCCCCC; /* Light grey line */
+    margin-bottom: 60px; /* Space below the line */
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 40px;
+}
+
+.stat-card {
+    background-color: #F8F6F4; /* Card background is same as body */
+    padding: 0; /* Remove padding as content will have it */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes button to bottom */
+}
+
+.stat-summary {
+    margin-bottom: 30px;
+}
+
+.stat-title {
+    font-size: 1.1em;
+    font-weight: normal;
+    margin-bottom: 5px;
+    color: #666666; /* Slightly lighter for title */
+}
+
+.stat-unit {
+    font-size: 0.9em;
+    color: #666666;
+    margin-bottom: 25px;
+}
+
+.current-value {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.current-value .value {
+    font-size: 3.5em; /* Large number */
+    font-weight: lighter; /* Thinner font weight */
+    color: #333333;
+    line-height: 1; /* Adjust line height to prevent extra space */
+}
+
+.change {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9em;
+    color: #666666;
+    line-height: 1.2;
+}
+
+.change-percent {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.change-percent.up {
+    color: #AD857D; /* Using the bar color for positive change */
+}
+
+.change-percent.down {
+    color: #AD857D; /* Using the bar color for negative change */
+}
+
+.historical-data {
+    margin-bottom: 40px;
+}
+
+.data-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.data-row:last-child {
+    margin-bottom: 0;
+}
+
+.year {
+    width: 45px; /* Fixed width for year */
+    text-align: right;
+    margin-right: 15px;
+    color: #333333;
+}
+
+.bar-container {
+    flex-grow: 1;
+    height: 6px;
+    background-color: #E6DFDB; /* Light bar track color */
+    border-radius: 3px;
+    overflow: hidden; /* Ensure bar stays within container */
+    margin-right: 15px;
+}
+
+.bar {
+    height: 100%;
+    background-color: #AD857D; /* Filled bar color */
+    border-radius: 3px;
+}
+
+.data-value {
+    font-weight: normal;
+    color: #333333;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    color: #333333;
+    font-size: 1em;
+    cursor: pointer;
+    text-align: left;
+    padding: 0; /* Remove default button padding */
+    margin-top: auto; /* Pushes button to the bottom of the flex container */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-button:hover {
+    text-decoration: underline;
+}
+
+.action-button .icon {
+    font-size: 1.2em; /* Adjust icon size */
+    line-height: 1; /* Align icon better */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    }
+    .current-value .value {
+        font-size: 3em;
+    }
+    .stats-dashboard {
+        margin: 20px auto;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .current-value .value {
+        font-size: 2.5em;
+    }
+    .change {
+        font-size: 0.8em;
+    }
+    .data-row {
+        font-size: 0.85em;
+    }
+}
+
 .carbon-container {
   display: flex;
   flex-direction: row;
