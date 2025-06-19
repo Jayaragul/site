@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Management Dashboard</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #121212;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 0 12px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(106, 26, 237, 0.2);
+            color: #6A1AED;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 32px;
+            background: #f5f5f7;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .action-button {
+            padding: 10px 16px;
+            background: #6A1AED;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .action-button:hover {
+            background: #5c15d0;
+        }
+
+        /* Brand Kits Container */
+        .brand-kits-container {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Header */
+        .brand-kits-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-kits-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        /* Cards Container */
+        .brand-kit-cards {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 12px;
+        }
+
+        /* Individual Card */
+        .brand-kit-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            border: 1px solid #eee;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .brand-kit-card:hover {
+            border-color: #ddd;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-kit-card.checked {
+            border-color: #6A1AED;
+            background: rgba(106, 26, 237, 0.05);
+        }
+
+        /* Card Left Section */
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        /* Custom Checkbox */
+        .brand-kit-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .brand-kit-checkbox:checked {
+            background-color: #6A1AED;
+            border-color: #6A1AED;
+        }
+
+        .brand-kit-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: translate(-50%, -60%) rotate(45deg);
+        }
+
+        /* Brand Logo */
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-initial {
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            z-index: 2;
+        }
+
+        .logo-parts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .logo-part {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+        }
+
+        .part-1 {
+            top: 0;
+            left: 0;
+            border-top-left-radius: 100%;
+        }
+
+        .part-2 {
+            top: 0;
+            right: 0;
+            border-top-right-radius: 100%;
+        }
+
+        .part-3 {
+            bottom: 0;
+            left: 0;
+            border-bottom-left-radius: 100%;
+        }
+
+        .part-4 {
+            bottom: 0;
+            right: 0;
+            border-bottom-right-radius: 100%;
+        }
+
+        /* Brand Info */
+        .brand-info {
+            flex: 1;
+        }
+
+        .brand-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .brand-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Card Actions */
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .action-icon:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Footer Actions */
+        .brand-kits-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .selected-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #ddd;
+            background: white;
+        }
+
+        .footer-button.primary {
+            background: #6A1AED;
+            color: white;
+            border-color: #6A1AED;
+        }
+
+        .footer-button.primary:hover {
+            background: #5c15d0;
+        }
+
+        .footer-button.secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* Color Variables */
+        .color-primary { background-color: #6A1AED; }
+        .color-secondary { background-color: #00C4B8; }
+        .color-tertiary { background-color: #FF5C5C; }
+        .color-quaternary { background-color: #FFA500; }
+        .color-gray { background-color: #444444; }
+        .color-light-gray { background-color: #666666; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .color-preview {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .color-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-circle.selected {
+            border-color: #1a1a1a;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-nav">
+                <div class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Dashboard
+                </div>
+                <div class="nav-item active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                        <path d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z" fill="currentColor"/>
+                    </svg>
+                    Brand Kits
+                </div>
+                <div class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z" fill="currentColor"/>
+                        <path d="M11 17H13V7H11V17Z" fill="currentColor"/>
+                        <path d="M7 17H9V7H7V17Z" fill="currentColor"/>
+                        <path d="M15 17H17V7H15V17Z" fill="currentColor"/>
+                    </svg>
+                    Templates
+                </div>
+                <div class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                        <path d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z" fill="currentColor"/>
+                    </svg>
+                    Assets
+                </div>
+                <div class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                        <path d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16Z" fill="currentColor"/>
+                    </svg>
+                    Settings
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1 class="page-title">Brand Kits</h1>
+                <button class="action-button" id="add-brand-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4V20M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Add New Brand
+                </button>
+            </div>
+
+            <div class="brand-kits-container">
+                <div class="brand-kits-header">
+                    <h2 class="brand-kits-title">My Brand Kits</h2>
+                    <div class="search-filter">
+                        <input type="text" class="search-input" placeholder="Search brands...">
+                    </div>
+                </div>
+                
+                <div class="brand-kit-cards" id="brand-kit-cards">
+                    <!-- Cards will be dynamically inserted here -->
+                </div>
+
+                <div class="brand-kits-footer">
+                    <div class="selected-count" id="selected-count">0 brands selected</div>
+                    <div class="footer-actions">
+                        <button class="footer-button secondary" id="deselect-all">Deselect All</button>
+                        <button class="footer-button primary" id="export-selected">Export Selected</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Brand Modal -->
+    <div class="modal-overlay" id="add-brand-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Brand Kit</h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Brand Name</label>
+                    <input type="text" class="form-input" id="brand-name" placeholder="Enter brand name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Brand Initial</label>
+                    <input type="text" class="form-input" id="brand-initial" maxlength="1" placeholder="First letter of brand">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Brand Colors</label>
+                    <div class="color-preview">
+                        <div class="color-circle color-primary selected" data-color="color-primary"></div>
+                        <div class="color-circle color-secondary" data-color="color-secondary"></div>
+                        <div class="color-circle color-tertiary" data-color="color-tertiary"></div>
+                        <div class="color-circle color-quaternary" data-color="color-quaternary"></div>
+                        <div class="color-circle color-gray" data-color="color-gray"></div>
+                        <div class="color-circle color-light-gray" data-color="color-light-gray"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="footer-button secondary" id="cancel-add">Cancel</button>
+                <button class="footer-button primary" id="save-brand">Save Brand</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample brand data
+            const brandData = [
+                { 
+                    id: 'ecorp', 
+                    name: 'ECorp', 
+                    initial: 'E', 
+                    colors: ['color-primary', 'color-secondary', 'color-gray', 'color-light-gray'],
+                    lastEdited: '2 days ago',
+                    assets: 24
+                },
+                { 
+                    id: 'icorp', 
+                    name: 'ICorp', 
+                    initial: 'I', 
+                    colors: ['color-tertiary', 'color-gray', 'color-light-gray', 'color-quaternary'],
+                    lastEdited: '1 week ago',
+                    assets: 15
+                },
+                { 
+                    id: 'agency', 
+                    name: 'The Agency', 
+                    initial: 'A', 
+                    colors: ['color-tertiary', 'color-primary', 'color-secondary', 'color-gray'],
+                    lastEdited: 'Yesterday',
+                    assets: 42,
+                    checked: true 
+                },
+                { 
+                    id: 'newcorp', 
+                    name: 'New Corp', 
+                    initial: 'N', 
+                    colors: ['color-secondary', 'color-quaternary', 'color-primary', 'color-light-gray'],
+                    lastEdited: '3 hours ago',
+                    assets: 8
+                }
+            ];
+
+            const container = document.getElementById('brand-kit-cards');
+            const selectedBrands = new Set();
+            let selectedColors = ['color-primary', 'color-secondary', 'color-gray', 'color-light-gray'];
+
+            // Render all brand cards
+            function renderBrandCards(brands) {
+                container.innerHTML = '';
+                brands.forEach(brand => createCard(brand));
+                updateSelectedCount();
+            }
+
+            // Create a single brand card
+            function createCard(brand) {
+                const card = document.createElement('div');
+                card.className = 'brand-kit-card';
+                if (brand.checked) card.classList.add('checked');
+
+                card.innerHTML = `
+                    <div class="card-left">
+                        <input type="checkbox" class="brand-kit-checkbox" id="${brand.id}-checkbox" ${brand.checked ? 'checked' : ''}>
+                        <div class="brand-logo">
+                            <div class="logo-parts">
+                                ${brand.colors.map((c, i) => `<div class="logo-part part-${i + 1} ${c}"></div>`).join('')}
+                            </div>
+                            <span class="logo-initial">${brand.initial}</span>
+                        </div>
+                        <div class="brand-info">
+                            <div class="brand-name">${brand.name}</div>
+                            <div class="brand-meta">${brand.assets} assets • Edited ${brand.lastEdited}</div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 4V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 18V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M4 12H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M18 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 8V16M8 12H16M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                `;
+
+                const checkbox = card.querySelector('input');
+                checkbox.addEventListener('change', () => {
+                    card.classList.toggle('checked', checkbox.checked);
+                    if (checkbox.checked) {
+                        selectedBrands.add(brand.id);
+                    } else {
+                        selectedBrands.delete(brand.id);
+                    }
+                    updateSelectedCount();
+                });
+
+                // Add click handlers for action icons
+                const actions = card.querySelectorAll('.action-icon');
+                actions[0].addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    alert(`Opening settings for ${brand.name}`);
+                });
+
+                actions[1].addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    alert(`Opening assets for ${brand.name}`);
+                });
+
+                // Click anywhere on card to view details
+                card.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'INPUT' && !e.target.closest('.action-icon')) {
+                        window.location.href = `brand-detail.html?id=${brand.id}`;
+                    }
+                });
+
+                container.appendChild(card);
+
+                if (brand.checked) selectedBrands.add(brand.id);
+            }
+
+            // Update selected count display
+            function updateSelectedCount() {
+                const count = selectedBrands.size;
+                const countElement = document.getElementById('selected-count');
+                countElement.textContent = `${count} ${count === 1 ? 'brand' : 'brands'} selected`;
+            }
+
+            // Deselect all brands
+            document.getElementById('deselect-all').addEventListener('click', () => {
+                document.querySelectorAll('.brand-kit-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.dispatchEvent(new Event('change'));
+                });
+            });
+
+            // Export selected brands
+            document.getElementById('export-selected').addEventListener('click', () => {
+                if (selectedBrands.size === 0) {
+                    alert('Please select at least one brand kit to export');
+                } else {
+                    const selectedNames = Array.from(selectedBrands).map(id => 
+                        brandData.find(brand => brand.id === id).name
+                    );
+                    alert(`Preparing export for: ${selectedNames.join(', ')}`);
+                    // In a real app, this would trigger a download or API call
+                }
+            });
+
+            // Modal functionality
+            const modal = document.getElementById('add-brand-modal');
+            const openModalBtn = document.getElementById('add-brand-btn');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelBtn = document.getElementById('cancel-add');
+            const saveBtn = document.getElementById('save-brand');
+
+            openModalBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            // Color selection in modal
+            document.querySelectorAll('.color-circle').forEach(circle => {
+                circle.addEventListener('click', function() {
+                    document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedColors = [this.dataset.color];
+                });
+            });
+
+            // Save new brand
+            saveBtn.addEventListener('click', () => {
+                const name = document.getElementById('brand-name').value.trim();
+                const initial = document.getElementById('brand-initial').value.trim().toUpperCase();
+                
+                if (!name || !initial) {
+                    alert('Please enter both a brand name and initial');
+                    return;
+                }
+
+                if (initial.length !== 1) {
+                    alert('Initial must be a single character');
+                    return;
+                }
+
+                // Generate a unique ID
+                const id = name.toLowerCase().replace(/\s+/g, '-') + '-' + Math.random().toString(36).substr(2, 4);
+                
+                // Create a new brand object
+                const newBrand = {
+                    id,
+                    name,
+                    initial,
+                    colors: selectedColors,
+                    lastEdited: 'Just now',
+                    assets: 0
+                };
+
+                // Add to our data and re-render
+                brandData.unshift(newBrand);
+                renderBrandCards(brandData);
+                
+                // Reset form and close modal
+                document.getElementById('brand-name').value = '';
+                document.getElementById('brand-initial').value = '';
+                modal.classList.remove('active');
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredBrands = brandData.filter(brand => 
+                    brand.name.toLowerCase().includes(searchTerm) || 
+                    brand.initial.toLowerCase().includes(searchTerm)
+                );
+                renderBrandCards(filteredBrands);
+            });
+
+            // Initial render
+            renderBrandCards(brandData);
+        });
+    </script>
+</body>
+</html>

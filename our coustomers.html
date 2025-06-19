@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Logos Carousel</title>
+    <style>
+        .customers-section {
+            background: #050505;
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .customers-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .logos-carousel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+            min-height: 200px;
+            position: relative;
+        }
+        
+        .logo-batch {
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .logo-batch.active {
+            opacity: 1;
+        }
+        
+        .logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: grayscale(100%) brightness(2);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            height: 60px;
+        }
+        
+        .customers-container:hover .logo-item {
+            filter: blur(4px) grayscale(100%) brightness(2);
+            opacity: 0.5;
+        }
+        
+        .customers-container:hover .logo-item:hover {
+            opacity: 1;
+            filter: blur(0) grayscale(0%) brightness(1);
+        }
+        
+        .logo-item img {
+            max-width: 80%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .cta-button {
+            opacity: 0;
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 30px auto 0;
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .customers-container:hover .cta-button {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .cta-button:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Individual logo animations */
+        .logo-item {
+            animation: fadeInLogo 0.8s ease-in forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+        }
+        
+        @keyframes fadeInLogo {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <section class="customers-section">
+        <div class="customers-container">
+            <div class="logos-carousel">
+                <!-- Batch 1 -->
+                <div class="logo-batch active" id="batch1">
+                    <!-- Row 1 -->
+                    <div class="logo-item" style="--delay:1">
+                        <img src="https://logo.clearbit.com/brex.com?format=png&size=128" alt="Brex">
+                    </div>
+                    <div class="logo-item" style="--delay:2">
+                        <img src="https://logo.clearbit.com/remote.com?format=png&size=128" alt="Remote">
+                    </div>
+                    <div class="logo-item" style="--delay:3">
+                        <img src="https://logo.clearbit.com/arc.com?format=png&size=128" alt="ARC">
+                    </div>
+                    <div class="logo-item" style="--delay:4">
+                        <img src="https://logo.clearbit.com/runwayml.com?format=png&size=128" alt="Runway">
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="logo-item" style="--delay:5">
+                        <img src="https://logo.clearbit.com/descript.com?format=png&size=128" alt="Descript">
+                    </div>
+                    <div class="logo-item" style="--delay:6">
+                        <img src="https://logo.clearbit.com/perplexity.ai?format=png&size=128" alt="Perplexity">
+                    </div>
+                    <div class="logo-item" style="--delay:7">
+                        <img src="https://logo.clearbit.com/monzo.com?format=png&size=128" alt="Monzo">
+                    </div>
+                    <div class="logo-item" style="--delay:8">
+                        <img src="https://logo.clearbit.com/raycast.com?format=png&size=128" alt="Raycast">
+                    </div>
+                </div>
+                
+                <!-- Batch 2 -->
+                <div class="logo-batch" id="batch2">
+                    <!-- Row 1 -->
+                    <div class="logo-item" style="--delay:1">
+                        <img src="https://logo.clearbit.com/retool.com?format=png&size=128" alt="Retool">
+                    </div>
+                    <div class="logo-item" style="--delay:2">
+                        <img src="https://logo.clearbit.com/mercury.com?format=png&size=128" alt="Mercury">
+                    </div>
+                    <div class="logo-item" style="--delay:3">
+                        <img src="https://logo.clearbit.com/ramp.com?format=png&size=128" alt="Ramp">
+                    </div>
+                    <div class="logo-item" style="--delay:4">
+                        <img src="https://logo.clearbit.com/openai.com?format=png&size=128" alt="OpenAI">
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="logo-item" style="--delay:5">
+                        <img src="https://logo.clearbit.com/brex.com?format=png&size=128" alt="Brex">
+                    </div>
+                    <div class="logo-item" style="--delay:6">
+                        <img src="https://logo.clearbit.com/remote.com?format=png&size=128" alt="Remote">
+                    </div>
+                    <div class="logo-item" style="--delay:7">
+                        <img src="https://logo.clearbit.com/arc.com?format=png&size=128" alt="ARC">
+                    </div>
+                    <div class="logo-item" style="--delay:8">
+                        <img src="https://logo.clearbit.com/runwayml.com?format=png&size=128" alt="Runway">
+                    </div>
+                </div>
+            </div>
+            
+            <a href="#" class="cta-button">Meet our customers &gt;</a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const batches = document.querySelectorAll('.logo-batch');
+            let currentBatch = 0;
+            
+            // Show the first batch initially
+            batches[currentBatch].classList.add('active');
+            
+            // Rotate batches every 2 seconds
+            setInterval(() => {
+                batches[currentBatch].classList.remove('active');
+                currentBatch = (currentBatch + 1) % batches.length;
+                batches[currentBatch].classList.add('active');
+            }, 2000);
+            
+            // Handle hover effects
+            const container = document.querySelector('.customers-container');
+            container.addEventListener('mouseenter', function() {
+                batches.forEach(batch => {
+                    if (batch.classList.contains('active')) {
+                        batch.querySelectorAll('.logo-item').forEach(item => {
+                            item.style.filter = 'blur(4px) grayscale(100%) brightness(2)';
+                            item.style.opacity = '0.5';
+                        });
+                    }
+                });
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                batches.forEach(batch => {
+                    if (batch.classList.contains('active')) {
+                        batch.querySelectorAll('.logo-item').forEach(item => {
+                            item.style.filter = 'grayscale(100%) brightness(2)';
+                            item.style.opacity = '0.7';
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

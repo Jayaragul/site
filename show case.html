@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showcase Work Section</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Showcase Section */
+        .showcase-section {
+            background-color: #EA385B;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .scroll-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+        }
+        
+        .scroll-slide {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .showcase-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .showcase-number {
+            position: absolute;
+            font-size: 25vw;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.1);
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            line-height: 0.8;
+            pointer-events: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .showcase-text-wrapper {
+            flex: 1;
+            padding-right: 60px;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .showcase-title {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            line-height: 1.2;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        
+        .showcase-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background-color: white;
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .read-more-btn {
+            background-color: #EA385B;
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .read-more-btn:hover {
+            background-color: white;
+            color: #EA385B;
+        }
+        
+        .showcase-media {
+            width: 40%;
+            max-width: 450px;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .showcase-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .view-all-cases-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 4;
+            background-color: transparent;
+        }
+        
+        .view-all-cases-btn:hover {
+            background-color: white;
+            color: #EA385B;
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            z-index: 4;
+        }
+        
+        .scroll-indicator i {
+            color: white;
+            font-size: 1.2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-indicator span {
+            color: white;
+            font-size: 0.8rem;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .showcase-content {
+                width: 95%;
+            }
+            
+            .showcase-number {
+                font-size: 30vw;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .showcase-content {
+                flex-direction: column;
+                padding-top: 80px;
+                padding-bottom: 120px;
+                text-align: center;
+            }
+            
+            .showcase-text-wrapper {
+                padding-right: 0;
+                margin-bottom: 40px;
+                width: 100%;
+            }
+            
+            .showcase-tags {
+                justify-content: center;
+            }
+            
+            .showcase-media {
+                width: 60%;
+            }
+            
+            .showcase-number {
+                font-size: 35vw;
+                right: -5vw;
+                top: 40%;
+            }
+            
+            .read-more-btn {
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .showcase-media {
+                width: 80%;
+            }
+            
+            .showcase-number {
+                font-size: 40vw;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .showcase-title {
+                font-size: 1.6rem;
+            }
+            
+            .showcase-media {
+                width: 90%;
+            }
+            
+            .view-all-cases-btn {
+                bottom: 20px;
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .tag {
+                padding: 4px 12px;
+                font-size: 0.7rem;
+            }
+            
+            .scroll-indicator {
+                bottom: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="showcase-section">
+        <div class="scroll-container">
+            <!-- Slide 1 -->
+            <div class="scroll-slide">
+                <div class="showcase-content">
+                    <div class="showcase-number">01</div>
+                    <div class="showcase-text-wrapper">
+                        <h2 class="showcase-title">SWITCH - SOPRA<br>STERIA KICK OFF<br>2025</h2>
+                        <div class="showcase-tags">
+                            <span class="tag">NORWAY</span>
+                            <span class="tag">B2E EVENT</span>
+                        </div>
+                        <a href="#" class="read-more-btn">READ MORE &nbsp;<i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="showcase-media">
+                        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Project Thumbnail">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 2 -->
+            <div class="scroll-slide">
+                <div class="showcase-content">
+                    <div class="showcase-number">02</div>
+                    <div class="showcase-text-wrapper">
+                        <h2 class="showcase-title">GRAND HOTEL<br>OSLO 150 YEARS</h2>
+                        <div class="showcase-tags">
+                            <span class="tag">INTERNATIONAL</span>
+                            <span class="tag">NORWAY</span>
+                            <span class="tag">BRAND ACTIVATION</span>
+                        </div>
+                        <a href="#" class="read-more-btn">READ MORE &nbsp;<i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="showcase-media">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Project Thumbnail">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 3 -->
+            <div class="scroll-slide">
+                <div class="showcase-content">
+                    <div class="showcase-number">03</div>
+                    <div class="showcase-text-wrapper">
+                        <h2 class="showcase-title">INFORMAL<br>MEETING OF NATO<br>MINISTERS OF<br>FOREIGN AFFAIRS IN<br>OSLO, NORWAY</h2>
+                        <div class="showcase-tags">
+                            <span class="tag">NORWAY</span>
+                            <span class="tag">B2E EVENT</span>
+                        </div>
+                        <a href="#" class="read-more-btn">READ MORE &nbsp;<i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="showcase-media">
+                        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=812&q=80" alt="Project Thumbnail">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span>SCROLL</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        
+        <a href="#" class="view-all-cases-btn">
+            <i class="fas fa-th"></i> VIEW ALL CASES
+        </a>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollContainer = document.querySelector('.scroll-container');
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            const viewAllBtn = document.querySelector('.view-all-cases-btn');
+            
+            // Hide scroll indicator when at bottom
+            const handleScroll = () => {
+                const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+                const isAtBottom = scrollHeight - scrollTop === clientHeight;
+                
+                if (isAtBottom) {
+                    scrollIndicator.style.opacity = '0';
+                } else {
+                    scrollIndicator.style.opacity = '1';
+                }
+            };
+            
+            scrollContainer.addEventListener('scroll', handleScroll);
+            
+            // Initialize scroll position
+            handleScroll();
+            
+            // Hide scroll indicator after first interaction
+            let interacted = false;
+            
+            const hideAfterInteraction = () => {
+                if (!interacted) {
+                    interacted = true;
+                    scrollIndicator.style.opacity = '0';
+                    scrollIndicator.style.transition = 'opacity 0.5s ease';
+                }
+            };
+            
+            scrollContainer.addEventListener('scroll', hideAfterInteraction);
+            document.addEventListener('keydown', hideAfterInteraction);
+            document.addEventListener('mousedown', hideAfterInteraction);
+            document.addEventListener('touchstart', hideAfterInteraction);
+            
+            // Prevent default scroll behavior for arrow keys when not at edges
+            document.addEventListener('keydown', function(e) {
+                if (['ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) {
+                    const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+                    const isAtTop = scrollTop === 0;
+                    const isAtBottom = scrollHeight - scrollTop === clientHeight;
+                    
+                    if ((e.code === 'ArrowUp' && isAtTop) || 
+                        (e.code === 'ArrowDown' && isAtBottom) ||
+                        e.code === 'Space') {
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

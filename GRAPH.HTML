@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embodied Carbon Emissions</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #fcf7f7;
+      margin: 0;
+      padding: 2rem;
+      color: #1e1e1e;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .left-panel {
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+    }
+    .right-panel {
+      flex: 2;
+      min-width: 300px;
+      text-align: right;
+    }
+    .filters label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+      font-weight: bold;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .filter-group button {
+      padding: 0.5rem 1rem;
+      border-radius: 1.5rem;
+      font-size: 0.9rem;
+      border: 1px solid #643939;
+      background-color: white;
+      color: #643939;
+      cursor: pointer;
+    }
+    .filter-group button.active {
+      background-color: #643939;
+      color: white;
+    }
+    .key {
+      font-size: 0.85rem;
+      margin: 1.5rem 0 1rem;
+    }
+    .key p {
+      margin: 0.3rem 0;
+    }
+    .chart-container {
+      width: 100%;
+      max-width: 100%;
+    }
+    canvas {
+      width: 100% !important;
+      height: 500px !important;
+    }
+    .title-container h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .title-container span {
+      display: block;
+      color: #7b3c3c;
+      font-weight: 500;
+    }
+    .title-container p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .download {
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border: 1px solid #444;
+      border-radius: 999px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+    }
+    .download::after {
+      content: '\2193';
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="filters">
+        <label>Type</label>
+        <div class="filter-group">
+          <button onclick="setType('Refurbishment')">Refurbishment</button>
+          <button onclick="setType('NewBuild')">New build</button>
+          <button class="active" onclick="setType('All')">All</button>
+        </div>
+        <label>Status</label>
+        <div class="filter-group">
+          <button class="active" onclick="setStatus('Complete')">Complete</button>
+          <button onclick="setStatus('Estimate')">Estimate</button>
+        </div>
+      </div>
+      <div class="key">
+        <p style="border-bottom: 1px dashed #aaa; display: inline-block;">500 kgCO₂e/m²</p> – Embodied Carbon Target 2030<br>
+        <p style="border-bottom: 1px solid #000; display: inline-block;">600 kgCO₂e/m²</p> – Embodied Carbon Target 2025
+      </div>
+    </div>
+
+    <div class="right-panel title-container">
+      <h1>EMBODIED <span>CARBON</span><span>EMISSIONS</span></h1>
+      <p>Intensity measured by kgCO<sub>2</sub>e/m<sup>2</sup></p>
+      <div class="download">Download the data</div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="carbonChart"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('carbonChart').getContext('2d');
+
+    const rawData = [
+      { name: 'A', Refurbishment: 549, NewBuild: 278, Complete: 875, Estimate: 875 },
+      { name: 'B', Refurbishment: 617, NewBuild: 506, Complete: 617, Estimate: 506 },
+      { name: 'C', Refurbishment: 36, NewBuild: 185, Complete: 191, Estimate: 122 },
+      { name: 'D', Refurbishment: 550, NewBuild: 881, Complete: 539, Estimate: 539 },
+      { name: 'E', Refurbishment: 269, NewBuild: 29, Complete: 82, Estimate: 44 },
+      { name: 'F', Refurbishment: 109, NewBuild: 106, Complete: 607, Estimate: 528 },
+      { name: 'G', Refurbishment: 212, NewBuild: 145, Complete: 400, Estimate: 398 },
+      { name: 'H', Refurbishment: 189, NewBuild: 92, Complete: 120, Estimate: 135 },
+      { name: 'I', Refurbishment: 375, NewBuild: 315, Complete: 500, Estimate: 499 },
+      { name: 'J', Refurbishment: 426, NewBuild: 350, Complete: 615, Estimate: 590 },
+    ];
+
+    let typeFilter = 'All';
+    let statusFilter = 'Complete';
+
+    function getFilteredData() {
+      return rawData.map(item => ({
+        label: item.name,
+        value: typeFilter === 'All' ? item[statusFilter] : item[typeFilter]
+      }));
+    }
+
+    function renderChart() {
+      const filtered = getFilteredData();
+      const labels = filtered.map(d => d.label);
+      const values = filtered.map(d => d.value);
+
+      if (window.chart) window.chart.destroy();
+
+      window.chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Embodied Carbon (kgCO₂e/m²)',
+            data: values,
+            backgroundColor: '#7b3c3c',
+            barThickness: 20
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 1200,
+              ticks: {
+                stepSize: 200
+              },
+              grid: {
+                drawBorder: false,
+                color: '#eaeaea'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ctx.raw + ' kgCO₂e/m²'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function setType(type) {
+      typeFilter = type;
+      updateButtons();
+      renderChart();
+    }
+
+    function setStatus(status) {
+      statusFilter = status;
+      updateButtons();
+      renderChart();
+    }
+
+    function updateButtons() {
+      document.querySelectorAll('.filter-group button').forEach(btn => btn.classList.remove('active'));
+      [...document.querySelectorAll('.filter-group')].forEach(group => {
+        const buttons = group.querySelectorAll('button');
+        buttons.forEach(btn => {
+          if (
+            btn.textContent.toLowerCase() === typeFilter.toLowerCase() ||
+            btn.textContent.toLowerCase() === statusFilter.toLowerCase()
+          ) {
+            btn.classList.add('active');
+          }
+        });
+      });
+    }
+
+    renderChart();
+  </script>
+</body>
+</html>

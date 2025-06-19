@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Testimonials</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: white;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #3f2b96, #a8c0ff);
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 80px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            align-items: center;
+            background: linear-gradient(135deg, #3f2b96, #a8c0ff);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            opacity: 0.8;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .hero-cta {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+
+        .scroll-hint span {
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .scroll-hint .arrow {
+            width: 24px;
+            height: 24px;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: rotate(-45deg);
+            animation: bounce 2s infinite;
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            background: linear-gradient(135deg, #3f2b96, #a8c0ff);
+        }
+
+        .testimonial-slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .testimonial-slider {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        .testimonial-slide {
+            min-width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            padding: 20px;
+        }
+
+        .testimonial-card {
+            background-color: rgba(94, 71, 169, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            width: 60%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .testimonial-slide.active .testimonial-card {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .quote {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .author {
+            font-size: 1.1em;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .company-logo {
+            margin-top: 20px;
+        }
+
+        .company-logo img {
+            width: 120px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            transition: transform 0.3s ease;
+        }
+
+        .company-logo:hover img {
+            transform: scale(1.05);
+        }
+
+        .testimonial-image {
+            width: 35%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(50px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+        }
+
+        .testimonial-slide.active .testimonial-image {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .testimonial-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .testimonial-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 15px;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider-dot::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            transform: scale(0);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background-color: transparent;
+        }
+
+        .slider-dot.active::after {
+            transform: scale(1);
+        }
+
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: none;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .slider-arrow:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-arrow.prev {
+            left: 20px;
+        }
+
+        .slider-arrow.next {
+            right: 20px;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            text-align: center;
+            align-items: center;
+            background: linear-gradient(135deg, #3f2b96, #a8c0ff);
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .pricing-headline {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .pricing-subhead {
+            font-size: 1.1em;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background-color: rgba(94, 71, 169, 0.7);
+            border-radius: 15px;
+            padding: 40px 30px;
+            width: 320px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(5px);
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        .pricing-card:nth-child(1) {
+            animation: fadeInUp 0.6s ease-out 0.2s forwards;
+        }
+        .pricing-card:nth-child(2) {
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
+        }
+        .pricing-card:nth-child(3) {
+            animation: fadeInUp 0.6s ease-out 0.6s forwards;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .pricing-card h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .order-limit {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            min-height: 70px;
+        }
+
+        .price {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .price .per-month {
+            font-size: 0.4em;
+            vertical-align: super;
+            opacity: 0.8;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .features-list li {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            position: relative;
+            padding-left: 20px;
+            opacity: 0.9;
+        }
+
+        .features-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .cta-button {
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover {
+            background-color: #4a148c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .pricing-card.most-popular {
+            border: 3px solid #ffd700;
+            transform: translateY(50px) scale(1.05);
+        }
+
+        .pricing-card.most-popular:hover {
+            transform: translateY(-10px) scale(1.05) !important;
+        }
+
+        .popular-label {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffd700;
+            color: #3f2b96;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: rotate(-45deg) translateY(0);
+            }
+            40% {
+                transform: rotate(-45deg) translateY(-10px);
+            }
+            60% {
+                transform: rotate(-45deg) translateY(-5px);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .testimonial-slide {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .testimonial-card, .testimonial-image {
+                width: 80%;
+            }
+
+            .testimonial-image {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .testimonial-card, .testimonial-image {
+                width: 100%;
+            }
+
+            .testimonial-card {
+                padding: 30px;
+            }
+            
+            .pricing-plans-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pricing-card {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .pricing-card.most-popular {
+                transform: translateY(50px) !important;
+            }
+
+            .pricing-card.most-popular:hover {
+                transform: translateY(-10px) !important;
+            }
+
+            .slider-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="container">
+            <p class="subtitle">Customer Testimonials</p>
+            <h1 class="main-title">Happy Sellers</h1>
+            <div class="hero-cta">
+                <div class="scroll-hint">
+                    <span>Scroll to explore</span>
+                    <div class="arrow"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="testimonial-slider-container">
+                <button class="slider-arrow prev">←</button>
+                <button class="slider-arrow next">→</button>
+                
+                <div class="testimonial-slider">
+                    <!-- Slide 1 -->
+                    <div class="testimonial-slide active">
+                        <div class="testimonial-card">
+                            <p class="quote">"This platform completely transformed our Amazon business. We saw a 40% increase in positive reviews within the first month of using it."</p>
+                            <p class="author">Sophie Wilson - USA Amazon Seller</p>
+                            <div class="company-logo">
+                                <img src="https://via.placeholder.com/120x40/FFFFFF?text=WATCHEM" alt="Watchem Logo">
+                            </div>
+                        </div>
+                        <div class="testimonial-image">
+                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Happy Seller">
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-card">
+                            <p class="quote">"The automation features saved us countless hours of manual work. Now we can focus on growing our business instead of chasing reviews."</p>
+                            <p class="author">Michael Chen - E-commerce Entrepreneur</p>
+                            <div class="company-logo">
+                                <img src="https://via.placeholder.com/120x40/FFFFFF?text=BRANDLY" alt="Brandly Logo">
+                            </div>
+                        </div>
+                        <div class="testimonial-image">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Happy Seller">
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-card">
+                            <p class="quote">"As a power seller, I've tried many tools but none compare to this. The analytics alone are worth the subscription price."</p>
+                            <p class="author">Sarah Johnson - Top 100 Amazon Seller</p>
+                            <div class="company-logo">
+                                <img src="https://via.placeholder.com/120x40/FFFFFF?text=SELLERPRO" alt="SellerPro Logo">
+                            </div>
+                        </div>
+                        <div class="testimonial-image">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Happy Seller">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slider-nav">
+                    <div class="slider-dot active" data-index="0"></div>
+                    <div class="slider-dot" data-index="1"></div>
+                    <div class="slider-dot" data-index="2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="pricing-headline">Choose your plan based on your monthly order volume.</h2>
+                <p class="pricing-subhead">Flexible pricing that grows with your business</p>
+            </div>
+            
+            <div class="pricing-plans-container">
+                <div class="pricing-card">
+                    <h3>Growth</h3>
+                    <p class="order-limit">Up to 2,500 orders per month</p>
+                    <p class="description">Are growing and scaling operations. Ideal for sellers who are expanding their product range and need more review automation.</p>
+                    <p class="price">$29.99 <span class="per-month">per month</span></p>
+                    <ul class="features-list">
+                        <li>Basic review automation</li>
+                        <li>Email templates</li>
+                        <li>Performance dashboard</li>
+                        <li>Up to 3 users</li>
+                    </ul>
+                    <button class="cta-button">Get Started</button>
+                </div>
+
+                <div class="pricing-card most-popular">
+                    <span class="popular-label">MOST POPULAR</span>
+                    <h3>Pro</h3>
+                    <p class="order-limit">Up to 10,000 orders per month</p>
+                    <p class="description">Have an established business with consistent sales. Great for professional Amazon sellers who need detailed insights and performance tracking.</p>
+                    <p class="price">$59.99 <span class="per-month">per month</span></p>
+                    <ul class="features-list">
+                        <li>Advanced automation</li>
+                        <li>Custom email sequences</li>
+                        <li>Detailed analytics</li>
+                        <li>Up to 10 users</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="cta-button">Get Started</button>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <p class="order-limit">30,000+ orders per month</p>
+                    <p class="description">Run a high-volume business. Designed for advanced automation and custom needs with dedicated account management.</p>
+                    <p class="price">$119.99 <span class="per-month">per month</span></p>
+                    <ul class="features-list">
+                        <li>Unlimited automation</li>
+                        <li>Custom workflows</li>
+                        <li>API access</li>
+                        <li>Unlimited users</li>
+                        <li>Dedicated account manager</li>
+                        <li>24/7 priority support</li>
+                    </ul>
+                    <button class="cta-button">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Testimonial Slider
+            const slider = document.querySelector('.testimonial-slider');
+            const slides = document.querySelectorAll('.testimonial-slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            const prevBtn = document.querySelector('.slider-arrow.prev');
+            const nextBtn = document.querySelector('.slider-arrow.next');
+            
+            let currentIndex = 0;
+            let autoSlideInterval;
+            let isAnimating = false;
+            const slideCount = slides.length;
+            
+            // Set initial position
+            function updateSliderPosition(animate = true) {
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                // Update active classes
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentIndex);
+                });
+                
+                if (animate) {
+                    slider.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                } else {
+                    slider.style.transition = 'none';
+                }
+                
+                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // Update dots
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+                
+                // Reset animation flag after transition ends
+                slider.addEventListener('transitionend', () => {
+                    isAnimating = false;
+                }, { once: true });
+            }
+            
+            // Auto slide
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(() => {
+                    goToSlide((currentIndex + 1) % slideCount);
+                }, 5000);
+            }
+            
+            function resetAutoSlide() {
+                clearInterval(autoSlideInterval);
+                startAutoSlide();
+            }
+            
+            function goToSlide(index) {
+                if (index < 0) index = slideCount - 1;
+                if (index >= slideCount) index = 0;
+                
+                currentIndex = index;
+                updateSliderPosition();
+                resetAutoSlide();
+            }
+            
+            // Manual navigation with dots
+            dots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    if (this.classList.contains('active')) return;
+                    goToSlide(parseInt(this.getAttribute('data-index')));
+                });
+            });
+            
+            // Arrow navigation
+            prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+            nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    goToSlide(currentIndex - 1);
+                } else if (e.key === 'ArrowRight') {
+                    goToSlide(currentIndex + 1);
+                }
+            });
+            
+            // Initialize
+            updateSliderPosition(false);
+            startAutoSlide();
+            
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe sections
+            document.querySelectorAll('.section-header, .pricing-card').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Smooth scroll between sections
+            const sections = document.querySelectorAll('section');
+            let isScrolling = false;
+            
+            window.addEventListener('wheel', function(e) {
+                if (isScrolling) return;
+                
+                isScrolling = true;
+                
+                const delta = e.deltaY;
+                let currentSectionIndex = Array.from(sections).findIndex(section => {
+                    const rect = section.getBoundingClientRect();
+                    return rect.top >= 0 && rect.top <= window.innerHeight / 2;
+                });
+                
+                if (delta > 0 && currentSectionIndex < sections.length - 1) {
+                    // Scroll down
+                    sections[currentSectionIndex + 1].scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else if (delta < 0 && currentSectionIndex > 0) {
+                    // Scroll up
+                    sections[currentSectionIndex - 1].scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 1000);
+            }, { passive: true });
+        });
+    </script>
+</body>
+</html>
